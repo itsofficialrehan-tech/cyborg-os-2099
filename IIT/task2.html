@@ -1,0 +1,2393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Humanity 2.0 — Where human consciousness merges with artificial intelligence. Join the next stage of evolution.">
+<meta name="theme-color" content="#000510">
+<title>HUMANITY 2.0 — The Next Evolution</title>
+<style>
+  /* ============================================================
+     DESIGN TOKENS
+     Palette: Deep void, neon cyan, electric blue, violet, plasma white
+  ============================================================ */
+  :root {
+    --void:       #000510;
+    --deep:       #010b1a;
+    --surface:    #050f20;
+    --panel:      rgba(5,15,40,0.7);
+    --cyan:       #00f5ff;
+    --cyan-dim:   rgba(0,245,255,0.15);
+    --cyan-glow:  rgba(0,245,255,0.4);
+    --blue:       #0080ff;
+    --blue-dim:   rgba(0,128,255,0.12);
+    --violet:     #8b00ff;
+    --violet-dim: rgba(139,0,255,0.15);
+    --plasma:     #e8f4ff;
+    --muted:      rgba(180,210,255,0.45);
+    --border:     rgba(0,245,255,0.12);
+    --border-h:   rgba(0,245,255,0.4);
+    --font-display: 'Courier New', monospace;
+    --font-body:    system-ui, -apple-system, sans-serif;
+    --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-snap:   cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* ============================================================
+     RESET & BASE
+  ============================================================ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--cyan) var(--void);
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--void); }
+  ::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 2px; }
+
+  body {
+    background: var(--void);
+    color: var(--plasma);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+
+  /* ============================================================
+     CUSTOM CURSOR
+  ============================================================ */
+  #cursor-outer {
+    position: fixed; top: 0; left: 0; width: 40px; height: 40px;
+    border: 1px solid var(--cyan-glow); border-radius: 50%;
+    pointer-events: none; z-index: 10000;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s var(--ease-smooth), height 0.3s var(--ease-smooth), border-color 0.3s ease, opacity 0.3s ease;
+    will-change: transform;
+  }
+  #cursor-dot {
+    position: fixed; top: 0; left: 0; width: 6px; height: 6px;
+    background: var(--cyan); border-radius: 50%;
+    pointer-events: none; z-index: 10001;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan);
+    will-change: transform;
+  }
+  body.cursor-hover #cursor-outer {
+    width: 60px; height: 60px;
+    border-color: var(--cyan);
+    background: var(--cyan-dim);
+  }
+
+  /* ============================================================
+     LOADER
+  ============================================================ */
+  #loader {
+    position: fixed; inset: 0; background: var(--void);
+    z-index: 9999; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+  }
+  #loader.done { opacity: 0; visibility: hidden; }
+
+  .loader-ring {
+    width: 80px; height: 80px;
+    border: 1px solid var(--border);
+    border-top-color: var(--cyan);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    position: relative;
+  }
+  .loader-ring::before {
+    content: '';
+    position: absolute; inset: 8px;
+    border: 1px solid var(--border);
+    border-bottom-color: var(--violet);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite reverse;
+  }
+  .loader-pct {
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--cyan);
+    margin-top: 24px;
+    text-transform: uppercase;
+  }
+  .loader-bar-wrap {
+    width: 200px; height: 1px;
+    background: var(--border);
+    margin-top: 16px;
+    overflow: hidden;
+  }
+  .loader-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cyan), var(--violet));
+    width: 0%;
+    transition: width 0.05s linear;
+    box-shadow: 0 0 8px var(--cyan);
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ============================================================
+     NAVIGATION
+  ============================================================ */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    padding: 20px 5%;
+    display: flex; align-items: center; justify-content: space-between;
+    background: transparent;
+    transition: background 0.5s ease, padding 0.3s ease;
+  }
+  nav.scrolled {
+    background: rgba(1,11,26,0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 14px 5%;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 15px;
+    letter-spacing: 6px;
+    color: var(--cyan);
+    text-transform: uppercase;
+    text-decoration: none;
+    position: relative;
+  }
+  .nav-logo::after {
+    content: '';
+    position: absolute; bottom: -3px; left: 0; right: 0; height: 1px;
+    background: var(--cyan);
+    box-shadow: 0 0 6px var(--cyan);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+  .nav-logo:hover::after { transform: scaleX(1); }
+
+  .nav-links {
+    display: flex; gap: 32px; list-style: none;
+  }
+  .nav-links a {
+    font-family: var(--font-display);
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s ease;
+    position: relative;
+  }
+  .nav-links a:hover { color: var(--cyan); }
+
+  .nav-cta {
+    font-family: var(--font-display);
+    font-size: 10px;
+    letter-spacing: 3px;
+    padding: 10px 20px;
+    border: 1px solid var(--cyan-glow);
+    color: var(--cyan);
+    background: var(--cyan-dim);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .nav-cta:hover {
+    background: var(--cyan);
+    color: var(--void);
+    box-shadow: 0 0 20px var(--cyan-glow);
+  }
+
+  .nav-hamburger {
+    display: none;
+    flex-direction: column; gap: 5px;
+    cursor: pointer; background: none; border: none; padding: 4px;
+  }
+  .nav-hamburger span {
+    display: block; width: 24px; height: 1px;
+    background: var(--cyan);
+    transition: all 0.3s ease;
+  }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .nav-hamburger { display: flex; }
+    .nav-cta { display: none; }
+  }
+
+  /* ============================================================
+     MOUSE LIGHT TRACKER
+  ============================================================ */
+  #mouse-light {
+    position: fixed; top: 0; left: 0;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,245,255,0.04) 0%, transparent 70%);
+    pointer-events: none; z-index: 1;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease;
+    will-change: transform;
+  }
+
+  /* ============================================================
+     SECTION SYSTEM
+  ============================================================ */
+  section { position: relative; z-index: 2; }
+
+  .section-eyebrow {
+    font-family: var(--font-display);
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: var(--cyan);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-eyebrow::before {
+    content: '';
+    display: block; width: 32px; height: 1px;
+    background: var(--cyan);
+    box-shadow: 0 0 6px var(--cyan);
+  }
+
+  .section-title {
+    font-size: clamp(32px, 5vw, 72px);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: var(--plasma);
+    margin-bottom: 20px;
+  }
+  .section-title em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--cyan), var(--blue), var(--violet));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .section-desc {
+    font-size: clamp(14px, 1.5vw, 17px);
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 520px;
+  }
+
+  /* Reveal animation */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.9s var(--ease-smooth), transform 0.9s var(--ease-smooth);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal.delay-1 { transition-delay: 0.1s; }
+  .reveal.delay-2 { transition-delay: 0.2s; }
+  .reveal.delay-3 { transition-delay: 0.3s; }
+  .reveal.delay-4 { transition-delay: 0.4s; }
+  .reveal.delay-5 { transition-delay: 0.5s; }
+
+  /* ============================================================
+     HERO SECTION
+  ============================================================ */
+  #hero {
+    height: 100vh; min-height: 700px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Neural network canvas */
+  #neural-canvas {
+    position: absolute; inset: 0;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  /* Cyborg face SVG */
+  .hero-face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .cyborg-svg-wrap {
+    width: min(520px, 80vw);
+    height: min(520px, 80vw);
+    position: relative;
+  }
+
+  .cyborg-face-svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 30px rgba(0,245,255,0.3)) drop-shadow(0 0 80px rgba(0,128,255,0.2));
+  }
+
+  /* Scan line effect */
+  .scan-line {
+    position: absolute; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    opacity: 0.6;
+    animation: scan 4s ease-in-out infinite;
+    box-shadow: 0 0 12px var(--cyan);
+    pointer-events: none;
+    z-index: 3;
+    top: 0;
+  }
+  @keyframes scan {
+    0%   { top: 0%; opacity: 0; }
+    5%   { opacity: 0.6; }
+    95%  { opacity: 0.6; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  /* Particle canvas */
+  #particle-canvas {
+    position: absolute; inset: 0; z-index: 2;
+    pointer-events: none;
+  }
+
+  /* Grid overlay */
+  .hero-grid {
+    position: absolute; inset: 0; z-index: 1;
+    background-image:
+      linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, transparent 30%, black 70%);
+  }
+
+  /* Hero content */
+  .hero-content {
+    position: relative; z-index: 4;
+    text-align: center;
+    padding: 0 5%;
+    max-width: 900px;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-display);
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: var(--cyan);
+    border: 1px solid var(--border-h);
+    padding: 8px 16px;
+    background: var(--cyan-dim);
+    backdrop-filter: blur(10px);
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    margin-bottom: 32px;
+    animation: fadeInDown 1s var(--ease-smooth) 0.5s both;
+  }
+  .badge-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 8px var(--cyan);
+    animation: blink 1.5s ease infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+
+  .hero-h1 {
+    font-size: clamp(48px, 10vw, 130px);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    text-transform: uppercase;
+    animation: fadeInUp 1s var(--ease-smooth) 0.7s both;
+  }
+  .hero-h1 .line1 {
+    display: block;
+    background: linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.6) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-h1 .line2 {
+    display: block;
+    background: linear-gradient(135deg, var(--cyan), var(--blue), var(--violet));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 40px rgba(0,245,255,0.5));
+  }
+
+  .hero-sub {
+    font-size: clamp(13px, 1.5vw, 17px);
+    color: var(--muted);
+    max-width: 480px;
+    margin: 24px auto 40px;
+    line-height: 1.7;
+    animation: fadeInUp 1s var(--ease-smooth) 0.9s both;
+  }
+
+  .hero-btns {
+    display: flex; flex-wrap: wrap; gap: 16px;
+    justify-content: center;
+    animation: fadeInUp 1s var(--ease-smooth) 1.1s both;
+  }
+
+  .btn-primary {
+    position: relative;
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--void);
+    background: var(--cyan);
+    border: none;
+    padding: 16px 36px;
+    cursor: none;
+    overflow: hidden;
+    clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+    transition: all 0.3s var(--ease-smooth);
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 0 30px rgba(0,245,255,0.4), inset 0 0 20px rgba(255,255,255,0.1);
+  }
+  .btn-primary:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 0 60px rgba(0,245,255,0.6), 0 10px 40px rgba(0,245,255,0.3);
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .btn-primary:hover::before { opacity: 1; }
+
+  .btn-secondary {
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    background: transparent;
+    border: 1px solid var(--cyan-glow);
+    padding: 16px 36px;
+    cursor: none;
+    clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+    transition: all 0.3s var(--ease-smooth);
+    text-decoration: none;
+    display: inline-block;
+    backdrop-filter: blur(10px);
+  }
+  .btn-secondary:hover {
+    background: var(--cyan-dim);
+    border-color: var(--cyan);
+    box-shadow: 0 0 30px rgba(0,245,255,0.2);
+    transform: translateY(-3px);
+  }
+
+  /* Floating holographic data panels */
+  .holo-panel {
+    position: absolute;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    padding: 14px 18px;
+    font-family: var(--font-display);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    z-index: 5;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+    animation: float 6s ease-in-out infinite;
+  }
+  .holo-panel .panel-val {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--cyan);
+    display: block;
+    text-shadow: 0 0 10px var(--cyan);
+    margin-bottom: 4px;
+  }
+  .holo-panel .panel-label {
+    letter-spacing: 3px;
+    font-size: 9px;
+    color: var(--muted);
+  }
+  .holo-panel::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  }
+
+  .panel-1 { top: 20%; left: 5%; animation-delay: 0s; }
+  .panel-2 { top: 20%; right: 5%; animation-delay: -2s; }
+  .panel-3 { bottom: 25%; left: 5%; animation-delay: -4s; }
+  .panel-4 { bottom: 25%; right: 5%; animation-delay: -1s; }
+
+  @keyframes float {
+    0%,100% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+    z-index: 6; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    font-family: var(--font-display); font-size: 9px; letter-spacing: 4px;
+    color: var(--muted); animation: fadeInUp 1s var(--ease-smooth) 1.5s both;
+  }
+  .scroll-line {
+    width: 1px; height: 50px;
+    background: linear-gradient(to bottom, var(--cyan), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%,100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.2); }
+  }
+
+  @media (max-width: 768px) {
+    .panel-1, .panel-2, .panel-3, .panel-4 { display: none; }
+  }
+
+  /* ============================================================
+     STATS ROW
+  ============================================================ */
+  #stats-row {
+    padding: 40px 5%;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
+    backdrop-filter: blur(20px);
+  }
+  .stats-grid {
+    max-width: 1200px; margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+  }
+  .stat-item {
+    background: var(--void);
+    padding: 28px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-item::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .stat-item:hover::before { opacity: 1; }
+  .stat-num {
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    background: linear-gradient(135deg, var(--cyan), var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+  }
+  .stat-unit {
+    font-size: clamp(16px, 2vw, 24px);
+    font-weight: 400;
+    -webkit-text-fill-color: var(--cyan);
+  }
+  .stat-label {
+    font-family: var(--font-display);
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 6px;
+    display: block;
+  }
+  @media (max-width: 600px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ============================================================
+     TIMELINE
+  ============================================================ */
+  #timeline {
+    padding: 120px 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .timeline-header { margin-bottom: 80px; }
+  .timeline-track {
+    position: relative;
+    padding-left: 40px;
+  }
+  .timeline-line {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 1px;
+    background: linear-gradient(to bottom, var(--cyan), var(--violet), transparent);
+    box-shadow: 0 0 8px var(--cyan-glow);
+  }
+  .timeline-item {
+    position: relative;
+    padding: 0 0 60px 40px;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute; left: -4px; top: 8px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 12px var(--cyan);
+    border: 2px solid var(--void);
+  }
+  .timeline-year {
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--cyan);
+    margin-bottom: 8px;
+  }
+  .timeline-title {
+    font-size: clamp(20px, 2.5vw, 28px);
+    font-weight: 300;
+    margin-bottom: 10px;
+    color: var(--plasma);
+  }
+  .timeline-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 500px;
+  }
+  .timeline-tag {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: var(--font-display);
+    font-size: 9px;
+    letter-spacing: 3px;
+    padding: 4px 12px;
+    border: 1px solid var(--violet-dim);
+    color: rgba(139,0,255,0.8);
+    background: var(--violet-dim);
+  }
+
+  /* ============================================================
+     ENHANCEMENTS GRID
+  ============================================================ */
+  #enhancements {
+    padding: 120px 5%;
+    background: linear-gradient(180deg, var(--void) 0%, var(--deep) 100%);
+  }
+  .enhancements-inner { max-width: 1200px; margin: 0 auto; }
+  .enhancements-header { margin-bottom: 60px; }
+  .enhance-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+  }
+  .enhance-card {
+    background: var(--surface);
+    padding: 40px 32px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s ease;
+    cursor: none;
+  }
+  .enhance-card:hover { background: rgba(0,245,255,0.03); }
+  .enhance-card::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(0,245,255,0.06) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .enhance-card:hover::after { opacity: 1; }
+
+  .enhance-icon {
+    width: 48px; height: 48px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .enhance-icon svg { width: 100%; height: 100%; }
+
+  .enhance-title {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    color: var(--plasma);
+  }
+  .enhance-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .enhance-level {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-display); font-size: 9px; letter-spacing: 3px; color: var(--muted);
+  }
+  .enhance-bar {
+    flex: 1; height: 2px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .enhance-fill {
+    position: absolute; top: 0; left: 0; height: 100%;
+    background: linear-gradient(90deg, var(--cyan), var(--violet));
+    box-shadow: 0 0 6px var(--cyan);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.2s var(--ease-smooth);
+  }
+  .enhance-fill.animated { transform: scaleX(1); }
+
+  @media (max-width: 900px) { .enhance-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 550px) { .enhance-grid { grid-template-columns: 1fr; } }
+
+  /* ============================================================
+     NEURAL INTEGRATION
+  ============================================================ */
+  #neural {
+    padding: 120px 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .neural-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .neural-diagram {
+    position: relative;
+    height: 400px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  #neural-diagram-canvas {
+    width: 100%; height: 100%;
+  }
+  .neural-text h2 { margin-bottom: 20px; }
+  .neural-features {
+    list-style: none;
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .neural-feat {
+    display: flex; align-items: center; gap: 14px;
+    font-size: 14px;
+    color: var(--muted);
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .neural-feat:hover {
+    border-color: var(--cyan-glow);
+    background: var(--cyan-dim);
+  }
+  .feat-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 8px var(--cyan);
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 900px) {
+    .neural-layout { grid-template-columns: 1fr; }
+    .neural-diagram { height: 280px; }
+  }
+
+  /* ============================================================
+     HUMAN vs CYBORG COMPARISON
+  ============================================================ */
+  #compare {
+    padding: 120px 5%;
+    background: var(--deep);
+  }
+  .compare-inner { max-width: 1200px; margin: 0 auto; }
+  .compare-header { text-align: center; margin-bottom: 60px; }
+  .compare-table {
+    display: grid;
+    grid-template-columns: 1fr 60px 1fr;
+    gap: 0;
+    background: var(--border);
+  }
+  .compare-col {
+    background: var(--surface);
+    padding: 40px 32px;
+  }
+  .compare-col.cyborg { background: rgba(0,245,255,0.03); }
+  .compare-divider {
+    background: var(--void);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 20px; padding: 20px 0;
+    font-family: var(--font-display); font-size: 9px; letter-spacing: 3px;
+    color: var(--muted); writing-mode: vertical-rl;
+  }
+  .compare-heading {
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .compare-col.human .compare-heading { color: var(--muted); }
+  .compare-col.cyborg .compare-heading { color: var(--cyan); }
+  .compare-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--muted);
+    transition: color 0.2s;
+  }
+  .compare-row:hover { color: var(--plasma); }
+  .compare-row:last-child { border: none; }
+  .cmp-label { flex: 1; }
+  .cmp-val {
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .compare-col.human .cmp-val { color: var(--muted); }
+  .compare-col.cyborg .cmp-val { color: var(--cyan); }
+
+  @media (max-width: 700px) {
+    .compare-table { grid-template-columns: 1fr; }
+    .compare-divider { writing-mode: horizontal-tb; padding: 16px; }
+  }
+
+  /* ============================================================
+     INTERACTIVE STATS
+  ============================================================ */
+  #interactive-stats {
+    padding: 120px 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .istats-header { margin-bottom: 60px; }
+  .istats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .istat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px;
+    transition: border-color 0.3s;
+  }
+  .istat-card:hover { border-color: var(--cyan-glow); }
+  .istat-label {
+    font-family: var(--font-display);
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .istat-bar-wrap {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .istat-bar {
+    height: 100%;
+    border-radius: 3px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.4s var(--ease-smooth);
+  }
+  .istat-bar.animated { transform: scaleX(1); }
+  .istat-bar.cyan { background: linear-gradient(90deg, var(--cyan), var(--blue)); box-shadow: 0 0 10px var(--cyan); }
+  .istat-bar.violet { background: linear-gradient(90deg, var(--violet), var(--blue)); box-shadow: 0 0 10px var(--violet); }
+  .istat-val {
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 900;
+    color: var(--cyan);
+    font-variant-numeric: tabular-nums;
+  }
+  .istat-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  @media (max-width: 700px) { .istats-grid { grid-template-columns: 1fr; } }
+
+  /* ============================================================
+     TECH SHOWCASE
+  ============================================================ */
+  #tech {
+    padding: 120px 5%;
+    background: var(--deep);
+  }
+  .tech-inner { max-width: 1200px; margin: 0 auto; }
+  .tech-header { margin-bottom: 60px; }
+  .tech-scroll-row {
+    display: flex; gap: 24px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 16px;
+    scroll-snap-type: x mandatory;
+  }
+  .tech-scroll-row::-webkit-scrollbar { display: none; }
+  .tech-card {
+    flex: 0 0 280px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px 28px;
+    scroll-snap-align: start;
+    transition: border-color 0.3s, transform 0.3s;
+    position: relative; overflow: hidden;
+    cursor: none;
+  }
+  .tech-card:hover {
+    border-color: var(--cyan-glow);
+    transform: translateY(-6px);
+  }
+  .tech-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--cyan), var(--violet));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .tech-card:hover::before { opacity: 1; }
+  .tech-card-num {
+    font-family: var(--font-display);
+    font-size: 40px;
+    font-weight: 900;
+    color: var(--border);
+    position: absolute;
+    top: 20px; right: 20px;
+  }
+  .tech-card-title {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    color: var(--plasma);
+  }
+  .tech-card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .tech-card-tag {
+    margin-top: 20px;
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: 9px;
+    letter-spacing: 3px;
+    padding: 4px 10px;
+    border: 1px solid var(--cyan-glow);
+    color: var(--cyan);
+    background: var(--cyan-dim);
+  }
+
+  /* ============================================================
+     TESTIMONIALS
+  ============================================================ */
+  #testimonials {
+    padding: 120px 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .testi-header { text-align: center; margin-bottom: 60px; }
+  .testi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+  }
+  .testi-card {
+    background: var(--surface);
+    padding: 36px 28px;
+    position: relative;
+    transition: background 0.3s;
+    cursor: none;
+  }
+  .testi-card:hover { background: rgba(0,245,255,0.03); }
+  .testi-card::before {
+    content: '"';
+    position: absolute;
+    top: 20px; right: 20px;
+    font-size: 80px;
+    line-height: 1;
+    color: var(--border);
+    font-family: Georgia, serif;
+  }
+  .testi-text {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 24px;
+    font-style: italic;
+  }
+  .testi-author {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .testi-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid var(--cyan-glow);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 12px; color: var(--cyan);
+    background: var(--cyan-dim);
+    flex-shrink: 0;
+  }
+  .testi-name { font-size: 13px; font-weight: 600; color: var(--plasma); }
+  .testi-role {
+    font-family: var(--font-display);
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--cyan);
+    margin-top: 2px;
+  }
+  @media (max-width: 900px) { .testi-grid { grid-template-columns: 1fr; } }
+
+  /* ============================================================
+     FAQ
+  ============================================================ */
+  #faq {
+    padding: 120px 5%;
+    background: var(--deep);
+  }
+  .faq-inner { max-width: 760px; margin: 0 auto; }
+  .faq-header { margin-bottom: 60px; }
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .faq-q {
+    width: 100%; background: none; border: none;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--plasma);
+    cursor: none;
+    text-align: left;
+    transition: color 0.2s;
+  }
+  .faq-q:hover { color: var(--cyan); }
+  .faq-icon {
+    width: 24px; height: 24px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s;
+    color: var(--cyan);
+    font-size: 14px;
+  }
+  .faq-item.open .faq-icon {
+    background: var(--cyan);
+    color: var(--void);
+    transform: rotate(45deg);
+    box-shadow: 0 0 12px var(--cyan-glow);
+  }
+  .faq-a {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.8;
+    padding: 0 0 24px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s var(--ease-smooth), padding 0.3s ease;
+  }
+  .faq-item.open .faq-a {
+    max-height: 300px;
+    padding-bottom: 24px;
+  }
+
+  /* ============================================================
+     CONTACT / JOIN
+  ============================================================ */
+  #contact {
+    padding: 120px 5% 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+  .contact-glow {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 600px; height: 400px;
+    background: radial-gradient(ellipse, rgba(0,245,255,0.06) 0%, rgba(139,0,255,0.04) 50%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .contact-form {
+    margin-top: 48px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--plasma);
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 16px 20px;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    width: 100%;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .form-input:focus {
+    border-color: var(--cyan-glow);
+    box-shadow: 0 0 20px rgba(0,245,255,0.1);
+  }
+  .form-input::placeholder { color: var(--muted); }
+  textarea.form-input {
+    resize: vertical;
+    min-height: 120px;
+    clip-path: none;
+  }
+  .form-submit {
+    align-self: center;
+    min-width: 200px;
+  }
+
+  @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+
+  /* ============================================================
+     FOOTER
+  ============================================================ */
+  footer {
+    padding: 40px 5%;
+    border-top: 1px solid var(--border);
+    display: flex; flex-wrap: wrap;
+    align-items: center; justify-content: space-between;
+    gap: 16px;
+    background: var(--void);
+  }
+  .footer-logo {
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 6px;
+    color: var(--cyan);
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+  .footer-links {
+    display: flex; flex-wrap: wrap; gap: 24px;
+    list-style: none;
+  }
+  .footer-links a {
+    font-family: var(--font-display);
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--cyan); }
+  .footer-copy {
+    font-family: var(--font-display);
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--muted);
+  }
+
+  /* ============================================================
+     CIRCUIT LINES (decorative)
+  ============================================================ */
+  .circuit-bg {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.15;
+    z-index: 0;
+  }
+
+  /* ============================================================
+     ENERGY PULSE ring
+  ============================================================ */
+  .pulse-ring {
+    position: absolute;
+    border: 1px solid var(--cyan);
+    border-radius: 50%;
+    animation: pulse-expand 3s ease-out infinite;
+    pointer-events: none;
+  }
+  @keyframes pulse-expand {
+    0%   { transform: translate(-50%,-50%) scale(0); opacity: 0.6; }
+    100% { transform: translate(-50%,-50%) scale(3); opacity: 0; }
+  }
+
+  /* ============================================================
+     MOBILE MENU
+  ============================================================ */
+  .mobile-menu {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,5,16,0.97);
+    backdrop-filter: blur(20px);
+    z-index: 999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 5px;
+    color: var(--muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .mobile-menu a:hover { color: var(--cyan); }
+  .mobile-menu-close {
+    position: absolute; top: 24px; right: 24px;
+    background: none; border: 1px solid var(--border);
+    color: var(--muted); font-size: 18px;
+    width: 36px; height: 36px;
+    cursor: none;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .mobile-menu-close:hover { border-color: var(--cyan); color: var(--cyan); }
+
+</style>
+</head>
+<body>
+
+<!-- CUSTOM CURSOR -->
+<div id="cursor-outer"></div>
+<div id="cursor-dot"></div>
+
+<!-- MOUSE LIGHT -->
+<div id="mouse-light"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-ring"></div>
+  <div class="loader-pct" id="loader-pct">INITIALIZING... 0%</div>
+  <div class="loader-bar-wrap"><div class="loader-bar" id="loader-bar"></div></div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo">H:2.0</a>
+  <ul class="nav-links">
+    <li><a href="#timeline">Evolution</a></li>
+    <li><a href="#enhancements">Enhancements</a></li>
+    <li><a href="#neural">Neural</a></li>
+    <li><a href="#tech">Tech</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Join The Future</a>
+  <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <button class="mobile-menu-close" id="menu-close">✕</button>
+  <a href="#timeline" onclick="closeMobileMenu()">Evolution</a>
+  <a href="#enhancements" onclick="closeMobileMenu()">Enhancements</a>
+  <a href="#neural" onclick="closeMobileMenu()">Neural</a>
+  <a href="#tech" onclick="closeMobileMenu()">Technology</a>
+  <a href="#testimonials" onclick="closeMobileMenu()">Citizens</a>
+  <a href="#faq" onclick="closeMobileMenu()">FAQ</a>
+  <a href="#contact" onclick="closeMobileMenu()">Join The Future</a>
+</div>
+
+<!-- ========== HERO ========== -->
+<section id="hero">
+  <canvas id="neural-canvas"></canvas>
+  <div class="hero-grid"></div>
+  <canvas id="particle-canvas"></canvas>
+  <div class="scan-line"></div>
+
+  <!-- Cyborg face -->
+  <div class="hero-face" id="hero-face">
+    <div class="cyborg-svg-wrap">
+      <svg class="cyborg-face-svg" viewBox="0 0 400 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Head silhouette -->
+        <defs>
+          <radialGradient id="faceGlow" cx="50%" cy="45%" r="50%">
+            <stop offset="0%" stop-color="#001824" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#000510" stop-opacity="1"/>
+          </radialGradient>
+          <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#00f5ff" stop-opacity="1"/>
+            <stop offset="60%" stop-color="#0080ff" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="#000510" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="strongGlow">
+            <feGaussianBlur stdDeviation="6" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <linearGradient id="circuitGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00f5ff" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#8b00ff" stop-opacity="0.3"/>
+          </linearGradient>
+          <clipPath id="faceClip">
+            <ellipse cx="200" cy="190" rx="130" ry="165"/>
+          </clipPath>
+        </defs>
+
+        <!-- Head base -->
+        <ellipse cx="200" cy="190" rx="130" ry="165" fill="url(#faceGlow)" stroke="rgba(0,245,255,0.2)" stroke-width="0.5"/>
+
+        <!-- Skull plate seams -->
+        <line x1="200" y1="30" x2="200" y2="90" stroke="rgba(0,245,255,0.3)" stroke-width="0.5"/>
+        <line x1="100" y1="80" x2="200" y2="60" stroke="rgba(0,245,255,0.15)" stroke-width="0.5"/>
+        <line x1="300" y1="80" x2="200" y2="60" stroke="rgba(0,245,255,0.15)" stroke-width="0.5"/>
+
+        <!-- Forehead circuit lines -->
+        <path d="M 160 80 L 180 90 L 180 100" stroke="url(#circuitGrad)" stroke-width="0.8" fill="none" opacity="0.6"/>
+        <path d="M 240 80 L 220 90 L 220 100" stroke="url(#circuitGrad)" stroke-width="0.8" fill="none" opacity="0.6"/>
+        <circle cx="160" cy="80" r="2" fill="#00f5ff" opacity="0.6"/>
+        <circle cx="240" cy="80" r="2" fill="#00f5ff" opacity="0.6"/>
+        <circle cx="180" cy="100" r="1.5" fill="#8b00ff" opacity="0.6"/>
+        <circle cx="220" cy="100" r="1.5" fill="#8b00ff" opacity="0.6"/>
+
+        <!-- Left eye socket -->
+        <ellipse cx="155" cy="175" rx="28" ry="20" fill="#000510" stroke="rgba(0,245,255,0.3)" stroke-width="0.5"/>
+        <!-- Right eye socket -->
+        <ellipse cx="245" cy="175" rx="28" ry="20" fill="#000510" stroke="rgba(0,245,255,0.3)" stroke-width="0.5"/>
+
+        <!-- Left eye glow -->
+        <ellipse id="eyeL" cx="155" cy="175" rx="18" ry="13" fill="url(#eyeGlow)" filter="url(#strongGlow)" opacity="0.9"/>
+        <ellipse cx="155" cy="175" rx="10" ry="7" fill="#00f5ff" opacity="0.9" filter="url(#glow)"/>
+        <ellipse cx="155" cy="175" rx="4" ry="3" fill="#ffffff"/>
+        <!-- Eye scan line -->
+        <rect x="127" y="170" width="56" height="1" fill="rgba(0,245,255,0.4)" opacity="0">
+          <animate attributeName="y" values="163;187;163" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0;0.6;0" dur="3s" repeatCount="indefinite"/>
+        </rect>
+
+        <!-- Right eye glow -->
+        <ellipse id="eyeR" cx="245" cy="175" rx="18" ry="13" fill="url(#eyeGlow)" filter="url(#strongGlow)" opacity="0.9"/>
+        <ellipse cx="245" cy="175" rx="10" ry="7" fill="#00f5ff" opacity="0.9" filter="url(#glow)"/>
+        <ellipse cx="245" cy="175" rx="4" ry="3" fill="#ffffff"/>
+        <!-- Eye scan line -->
+        <rect x="217" y="170" width="56" height="1" fill="rgba(0,245,255,0.4)" opacity="0">
+          <animate attributeName="y" values="163;187;163" dur="3s" begin="0.5s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0;0.6;0" dur="3s" begin="0.5s" repeatCount="indefinite"/>
+        </rect>
+
+        <!-- Nose bridge -->
+        <path d="M 200 195 L 190 230 L 200 235 L 210 230 Z" fill="rgba(0,25,40,0.8)" stroke="rgba(0,245,255,0.15)" stroke-width="0.5"/>
+
+        <!-- Cybernetic jaw / lower face circuit -->
+        <path d="M 130 270 Q 200 310 270 270" stroke="rgba(0,245,255,0.2)" stroke-width="0.5" fill="none"/>
+        <path d="M 140 285 Q 200 330 260 285" stroke="rgba(0,245,255,0.1)" stroke-width="0.5" fill="none"/>
+
+        <!-- Jaw plates -->
+        <path d="M 110 260 L 130 280 L 130 300" stroke="rgba(0,245,255,0.25)" stroke-width="0.7" fill="none"/>
+        <path d="M 290 260 L 270 280 L 270 300" stroke="rgba(0,245,255,0.25)" stroke-width="0.7" fill="none"/>
+        <circle cx="130" cy="300" r="2" fill="#00f5ff" opacity="0.4"/>
+        <circle cx="270" cy="300" r="2" fill="#00f5ff" opacity="0.4"/>
+
+        <!-- Cheek implants -->
+        <rect x="92" y="215" width="18" height="6" rx="1" fill="rgba(0,245,255,0.1)" stroke="rgba(0,245,255,0.3)" stroke-width="0.5"/>
+        <rect x="290" y="215" width="18" height="6" rx="1" fill="rgba(0,245,255,0.1)" stroke="rgba(0,245,255,0.3)" stroke-width="0.5"/>
+
+        <!-- Temple circuit branches -->
+        <path d="M 80 170 L 100 175 L 115 165 L 130 170" stroke="rgba(0,245,255,0.4)" stroke-width="0.7" fill="none" filter="url(#glow)"/>
+        <path d="M 320 170 L 300 175 L 285 165 L 270 170" stroke="rgba(0,245,255,0.4)" stroke-width="0.7" fill="none" filter="url(#glow)"/>
+        <circle cx="80" cy="170" r="2.5" fill="#00f5ff" opacity="0.7">
+          <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="320" cy="170" r="2.5" fill="#00f5ff" opacity="0.7">
+          <animate attributeName="opacity" values="0.2;0.7;0.2" dur="2s" repeatCount="indefinite"/>
+        </circle>
+
+        <!-- Data streams from eyes -->
+        <g opacity="0.3">
+          <line x1="155" y1="188" x2="155" y2="360" stroke="rgba(0,245,255,0.2)" stroke-width="1">
+            <animate attributeName="opacity" values="0.3;0;0.3" dur="4s" repeatCount="indefinite"/>
+          </line>
+          <line x1="245" y1="188" x2="245" y2="360" stroke="rgba(0,245,255,0.2)" stroke-width="1">
+            <animate attributeName="opacity" values="0;0.3;0" dur="4s" repeatCount="indefinite"/>
+          </line>
+        </g>
+
+        <!-- Neck circuits -->
+        <rect x="175" y="345" width="50" height="60" rx="4" fill="rgba(0,10,20,0.9)" stroke="rgba(0,245,255,0.2)" stroke-width="0.5"/>
+        <line x1="185" y1="355" x2="215" y2="355" stroke="rgba(0,245,255,0.3)" stroke-width="0.5"/>
+        <line x1="185" y1="365" x2="215" y2="365" stroke="rgba(0,245,255,0.2)" stroke-width="0.5"/>
+        <line x1="185" y1="375" x2="215" y2="375" stroke="rgba(0,245,255,0.15)" stroke-width="0.5"/>
+        <circle cx="200" cy="390" r="4" fill="rgba(0,245,255,0.1)" stroke="rgba(0,245,255,0.4)" stroke-width="0.5"/>
+        <circle cx="200" cy="390" r="2" fill="#00f5ff" opacity="0.4">
+          <animate attributeName="opacity" values="0.4;1;0.4" dur="1.5s" repeatCount="indefinite"/>
+        </circle>
+
+        <!-- Outer head rim glow -->
+        <ellipse cx="200" cy="190" rx="130" ry="165" fill="none" stroke="rgba(0,245,255,0.1)" stroke-width="1"/>
+        <ellipse cx="200" cy="190" rx="133" ry="168" fill="none" stroke="rgba(0,245,255,0.04)" stroke-width="2"/>
+
+        <!-- Top head status lights -->
+        <circle cx="175" cy="35" r="2" fill="#00f5ff" opacity="0.5">
+          <animate attributeName="opacity" values="0.5;1;0.5" dur="1.2s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="200" cy="28" r="2.5" fill="#8b00ff" opacity="0.7">
+          <animate attributeName="opacity" values="0.7;0.2;0.7" dur="0.8s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="225" cy="35" r="2" fill="#00f5ff" opacity="0.5">
+          <animate attributeName="opacity" values="0.5;1;0.5" dur="1.6s" repeatCount="indefinite"/>
+        </circle>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Floating panels -->
+  <div class="holo-panel panel-1">
+    <span class="panel-val" id="panel-neural">98.7%</span>
+    <span class="panel-label">Neural Sync</span>
+  </div>
+  <div class="holo-panel panel-2">
+    <span class="panel-val" id="panel-proc">4.2 THz</span>
+    <span class="panel-label">Processing Speed</span>
+  </div>
+  <div class="holo-panel panel-3">
+    <span class="panel-val">∞</span>
+    <span class="panel-label">Memory Capacity</span>
+  </div>
+  <div class="holo-panel panel-4">
+    <span class="panel-val" id="panel-online">2.4M</span>
+    <span class="panel-label">Online Now</span>
+  </div>
+
+  <!-- Hero content -->
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="badge-dot"></div>
+      <span>NEURAL INTERFACE ACTIVE</span>
+    </div>
+    <h1 class="hero-h1">
+      <span class="line1">HUMANITY</span>
+      <span class="line2">2.0</span>
+    </h1>
+    <p class="hero-sub">The boundary between flesh and machine has dissolved. You are no longer just human — you are the next operating system of consciousness.</p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-primary">Initialize Upgrade</a>
+      <a href="#timeline" class="btn-secondary">View Evolution</a>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <span>SCROLL</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ========== STATS ROW ========== -->
+<div id="stats-row">
+  <div class="stats-grid">
+    <div class="stat-item reveal">
+      <span class="stat-num"><span class="counter" data-target="847" data-suffix="K">0</span></span>
+      <span class="stat-label">Enhanced Humans</span>
+    </div>
+    <div class="stat-item reveal delay-1">
+      <span class="stat-num"><span class="counter" data-target="99" data-suffix=".9%">0</span></span>
+      <span class="stat-label">Uptime Guarantee</span>
+    </div>
+    <div class="stat-item reveal delay-2">
+      <span class="stat-num"><span class="counter" data-target="2047" data-suffix="">0</span></span>
+      <span class="stat-label">Year of Singularity</span>
+    </div>
+    <div class="stat-item reveal delay-3">
+      <span class="stat-num"><span class="counter" data-target="312" data-suffix="%">0</span></span>
+      <span class="stat-label">Cognitive Enhancement</span>
+    </div>
+  </div>
+</div>
+
+<!-- ========== TIMELINE ========== -->
+<section id="timeline">
+  <div class="timeline-header reveal">
+    <div class="section-eyebrow">Evolution Timeline</div>
+    <h2 class="section-title">How We Got <em>Here</em></h2>
+    <p class="section-desc">From silicon dreams to synthetic consciousness — the milestones that rewrote what it means to be alive.</p>
+  </div>
+  <div class="timeline-track">
+    <div class="timeline-line"></div>
+    <div class="timeline-item reveal">
+      <div class="timeline-year">2024</div>
+      <div class="timeline-title">The Neural Seed</div>
+      <p class="timeline-desc">First successful bidirectional brain-computer interface implant achieves 1,024-channel simultaneous neural recording and stimulation in human subjects.</p>
+      <span class="timeline-tag">FOUNDATION</span>
+    </div>
+    <div class="timeline-item reveal delay-1">
+      <div class="timeline-year">2028</div>
+      <div class="timeline-title">Memory Expansion Protocol</div>
+      <p class="timeline-desc">External memory modules allow humans to store and retrieve episodic memories with perfect fidelity. 10TB of experiential data, compressed into a fingernail-sized cortical chip.</p>
+      <span class="timeline-tag">MILESTONE</span>
+    </div>
+    <div class="timeline-item reveal delay-2">
+      <div class="timeline-year">2033</div>
+      <div class="timeline-title">Synthetic Sensory Grid</div>
+      <p class="timeline-desc">Haptic exo-skin grants users perception across 47 new sensory channels — infrared, sonar, electromagnetic fields. The human body becomes a biological sensor array.</p>
+      <span class="timeline-tag">BREAKTHROUGH</span>
+    </div>
+    <div class="timeline-item reveal delay-3">
+      <div class="timeline-year">2041</div>
+      <div class="timeline-title">Hive Network Goes Live</div>
+      <p class="timeline-desc">2.1 million enhanced humans connect into a distributed mesh intelligence. For the first time in history, thought travels faster than language.</p>
+      <span class="timeline-tag">SINGULARITY EVENT</span>
+    </div>
+    <div class="timeline-item reveal delay-4">
+      <div class="timeline-year">2047 →</div>
+      <div class="timeline-title">You Are The Upgrade</div>
+      <p class="timeline-desc">The line between individual and collective, biological and digital, has ceased to exist. Humanity 2.0 is not a product. It is the next state of being.</p>
+      <span class="timeline-tag" style="border-color:rgba(0,245,255,0.4); color:var(--cyan); background:var(--cyan-dim);">NOW ENROLLING</span>
+    </div>
+  </div>
+</section>
+
+<!-- ========== ENHANCEMENTS ========== -->
+<section id="enhancements">
+  <div class="enhancements-inner">
+    <div class="enhancements-header reveal">
+      <div class="section-eyebrow">Cybernetic Catalog</div>
+      <h2 class="section-title"><em>Enhancements</em></h2>
+      <p class="section-desc">Choose your augmentation path. Each enhancement is a precision-engineered marriage of organic tissue and machine intelligence.</p>
+    </div>
+    <div class="enhance-grid">
+      <div class="enhance-card reveal" onmousemove="trackMouse(this,event)">
+        <div class="enhance-icon">
+          <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="10" stroke="#00f5ff" stroke-width="1"/><circle cx="24" cy="24" r="4" fill="#00f5ff" opacity="0.8"/><line x1="24" y1="4" x2="24" y2="14" stroke="#00f5ff" stroke-width="1"/><line x1="24" y1="34" x2="24" y2="44" stroke="#00f5ff" stroke-width="1"/><line x1="4" y1="24" x2="14" y2="24" stroke="#00f5ff" stroke-width="1"/><line x1="34" y1="24" x2="44" y2="24" stroke="#00f5ff" stroke-width="1"/><circle cx="24" cy="24" r="16" stroke="rgba(0,245,255,0.2)" stroke-width="0.5" stroke-dasharray="3 3"/></svg>
+        </div>
+        <div class="enhance-title">Ocular Array</div>
+        <p class="enhance-desc">360° vision. Night mode. 8K zoom. Threat recognition at 200ms. Your eyes become tactical instruments of perception.</p>
+        <div class="enhance-level">
+          <span>Enhancement Level</span>
+          <div class="enhance-bar"><div class="enhance-fill" style="--w:0.92;width:92%;"></div></div>
+          <span>92%</span>
+        </div>
+      </div>
+      <div class="enhance-card reveal delay-1" onmousemove="trackMouse(this,event)">
+        <div class="enhance-icon">
+          <svg viewBox="0 0 48 48" fill="none"><rect x="8" y="12" width="32" height="24" rx="2" stroke="#8b00ff" stroke-width="1"/><path d="M16 20 L22 26 L26 22 L32 28" stroke="#8b00ff" stroke-width="1" fill="none"/><circle cx="12" cy="16" r="2" fill="#8b00ff" opacity="0.6"><animate attributeName="opacity" values="0.6;1;0.6" dur="1s" repeatCount="indefinite"/></circle></svg>
+        </div>
+        <div class="enhance-title">Cortex Bridge</div>
+        <p class="enhance-desc">Direct neural access to global knowledge networks. Query any database with a thought. Response time: 8 milliseconds.</p>
+        <div class="enhance-level">
+          <span>Enhancement Level</span>
+          <div class="enhance-bar"><div class="enhance-fill" style="width:88%;"></div></div>
+          <span>88%</span>
+        </div>
+      </div>
+      <div class="enhance-card reveal delay-2" onmousemove="trackMouse(this,event)">
+        <div class="enhance-icon">
+          <svg viewBox="0 0 48 48" fill="none"><path d="M24 8 C14 8 8 16 8 24 C8 32 14 40 24 40 C34 40 40 32 40 24" stroke="#0080ff" stroke-width="1" fill="none"/><path d="M24 8 C34 8 40 16 40 24" stroke="#00f5ff" stroke-width="1.5" fill="none" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 24 24" to="360 24 24" dur="3s" repeatCount="indefinite"/></path><circle cx="24" cy="24" r="6" fill="rgba(0,128,255,0.3)" stroke="#0080ff" stroke-width="1"/></svg>
+        </div>
+        <div class="enhance-title">Skeletal Lattice</div>
+        <p class="enhance-desc">Carbon-nanotube reinforcement of the entire skeletal structure. 40× impact resistance. Subdermal armor plating optional.</p>
+        <div class="enhance-level">
+          <span>Enhancement Level</span>
+          <div class="enhance-bar"><div class="enhance-fill" style="width:76%;"></div></div>
+          <span>76%</span>
+        </div>
+      </div>
+      <div class="enhance-card reveal delay-1" onmousemove="trackMouse(this,event)">
+        <div class="enhance-icon">
+          <svg viewBox="0 0 48 48" fill="none"><path d="M8 24 Q24 10 40 24 Q24 38 8 24Z" stroke="#00f5ff" stroke-width="1" fill="rgba(0,245,255,0.05)"/><circle cx="24" cy="24" r="3" fill="#00f5ff"/><path d="M24 8 L24 16" stroke="rgba(0,245,255,0.4)" stroke-width="1"/><path d="M24 32 L24 40" stroke="rgba(0,245,255,0.4)" stroke-width="1"/></svg>
+        </div>
+        <div class="enhance-title">Cardiac Engine</div>
+        <p class="enhance-desc">Hybrid bioelectric heart. Self-regulating rhythm, surge-capacity blood delivery, and integrated medical monitoring with sub-second response.</p>
+        <div class="enhance-level">
+          <span>Enhancement Level</span>
+          <div class="enhance-bar"><div class="enhance-fill" style="width:95%;"></div></div>
+          <span>95%</span>
+        </div>
+      </div>
+      <div class="enhance-card reveal delay-2" onmousemove="trackMouse(this,event)">
+        <div class="enhance-icon">
+          <svg viewBox="0 0 48 48" fill="none"><rect x="16" y="8" width="16" height="32" rx="3" stroke="#8b00ff" stroke-width="1"/><line x1="20" y1="14" x2="28" y2="14" stroke="#8b00ff" stroke-width="0.8"/><line x1="20" y1="19" x2="28" y2="19" stroke="#8b00ff" stroke-width="0.8"/><line x1="20" y1="24" x2="28" y2="24" stroke="#8b00ff" stroke-width="0.8"/><circle cx="24" cy="34" r="2" fill="#8b00ff" opacity="0.7"><animate attributeName="opacity" values="0.7;0.2;0.7" dur="0.8s" repeatCount="indefinite"/></circle></svg>
+        </div>
+        <div class="enhance-title">Nanite Bloodstream</div>
+        <p class="enhance-desc">600 trillion programmable nanobots circulating in your vascular system — healing wounds in 4 minutes, eliminating pathogens on contact.</p>
+        <div class="enhance-level">
+          <span>Enhancement Level</span>
+          <div class="enhance-bar"><div class="enhance-fill" style="width:84%;"></div></div>
+          <span>84%</span>
+        </div>
+      </div>
+      <div class="enhance-card reveal delay-3" onmousemove="trackMouse(this,event)">
+        <div class="enhance-icon">
+          <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="14" stroke="#00f5ff" stroke-width="0.5" stroke-dasharray="2 4"/><circle cx="24" cy="24" r="8" stroke="#0080ff" stroke-width="1"/><circle cx="24" cy="24" r="3" fill="#0080ff"/><circle cx="24" cy="10" r="2" fill="#00f5ff" opacity="0.7"/><circle cx="24" cy="38" r="2" fill="#00f5ff" opacity="0.7"/><circle cx="10" cy="24" r="2" fill="#00f5ff" opacity="0.7"/><circle cx="38" cy="24" r="2" fill="#00f5ff" opacity="0.7"/></svg>
+        </div>
+        <div class="enhance-title">Mesh Consciousness</div>
+        <p class="enhance-desc">Join the collective. Share sensory experiences, knowledge, and emotions with your network in real time. Privacy filters are configurable.</p>
+        <div class="enhance-level">
+          <span>Enhancement Level</span>
+          <div class="enhance-bar"><div class="enhance-fill" style="width:79%;"></div></div>
+          <span>79%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== NEURAL INTEGRATION ========== -->
+<section id="neural">
+  <div class="neural-layout">
+    <div class="neural-diagram reveal">
+      <canvas id="neural-diagram-canvas"></canvas>
+    </div>
+    <div class="neural-text reveal delay-2">
+      <div class="section-eyebrow">AI Integration</div>
+      <h2 class="section-title">Your Mind.<br><em>Amplified.</em></h2>
+      <p class="section-desc">Our proprietary NeuroSync™ protocol creates a seamless layer between your biological neural patterns and AI inference engines running at 4.2 terahertz.</p>
+      <ul class="neural-features">
+        <li class="neural-feat"><div class="feat-dot"></div>Real-time language translation across 847 languages</li>
+        <li class="neural-feat"><div class="feat-dot"></div>Instant recall of any memory with 99.97% fidelity</li>
+        <li class="neural-feat"><div class="feat-dot"></div>Predictive thought completion and decision modeling</li>
+        <li class="neural-feat"><div class="feat-dot"></div>Emotional regulation and empathy amplification</li>
+        <li class="neural-feat"><div class="feat-dot"></div>Subconscious threat and opportunity detection</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ========== COMPARISON ========== -->
+<section id="compare">
+  <div class="compare-inner">
+    <div class="compare-header reveal">
+      <div class="section-eyebrow">Side by Side</div>
+      <h2 class="section-title">Human vs <em>Cyborg</em></h2>
+    </div>
+    <div class="compare-table reveal">
+      <div class="compare-col human">
+        <div class="compare-heading">Unenhanced Human</div>
+        <div class="compare-row"><span class="cmp-label">Processing Speed</span><span class="cmp-val">120 Hz</span></div>
+        <div class="compare-row"><span class="cmp-label">Memory Capacity</span><span class="cmp-val">~2.5 PB</span></div>
+        <div class="compare-row"><span class="cmp-label">Reaction Time</span><span class="cmp-val">250 ms</span></div>
+        <div class="compare-row"><span class="cmp-label">Sleep Required</span><span class="cmp-val">8 hrs/day</span></div>
+        <div class="compare-row"><span class="cmp-label">Lifespan</span><span class="cmp-val">~79 years</span></div>
+        <div class="compare-row"><span class="cmp-label">Languages</span><span class="cmp-val">1–3</span></div>
+        <div class="compare-row"><span class="cmp-label">Network Access</span><span class="cmp-val">External</span></div>
+      </div>
+      <div class="compare-divider">VS</div>
+      <div class="compare-col cyborg">
+        <div class="compare-heading">Humanity 2.0</div>
+        <div class="compare-row"><span class="cmp-label">Processing Speed</span><span class="cmp-val">4.2 THz</span></div>
+        <div class="compare-row"><span class="cmp-label">Memory Capacity</span><span class="cmp-val">Unlimited</span></div>
+        <div class="compare-row"><span class="cmp-label">Reaction Time</span><span class="cmp-val">8 ms</span></div>
+        <div class="compare-row"><span class="cmp-label">Sleep Required</span><span class="cmp-val">2 hrs/day</span></div>
+        <div class="compare-row"><span class="cmp-label">Lifespan</span><span class="cmp-val">400+ years</span></div>
+        <div class="compare-row"><span class="cmp-label">Languages</span><span class="cmp-val">847</span></div>
+        <div class="compare-row"><span class="cmp-label">Network Access</span><span class="cmp-val">Neural Direct</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== INTERACTIVE STATS ========== -->
+<section id="interactive-stats">
+  <div class="istats-header reveal">
+    <div class="section-eyebrow">System Diagnostics</div>
+    <h2 class="section-title">Live <em>Metrics</em></h2>
+    <p class="section-desc">Real-time performance indicators from the Humanity 2.0 global network.</p>
+  </div>
+  <div class="istats-grid">
+    <div class="istat-card reveal">
+      <div class="istat-label">Global Neural Bandwidth</div>
+      <div class="istat-bar-wrap"><div class="istat-bar cyan" style="width:89%;"></div></div>
+      <div class="istat-val"><span class="counter" data-target="89" data-suffix="%">0</span></div>
+      <div class="istat-sub">847K nodes synchronized</div>
+    </div>
+    <div class="istat-card reveal delay-1">
+      <div class="istat-label">Collective Intelligence Index</div>
+      <div class="istat-bar-wrap"><div class="istat-bar violet" style="width:97%;"></div></div>
+      <div class="istat-val"><span class="counter" data-target="97" data-suffix=".3">0</span></div>
+      <div class="istat-sub">9.73× baseline human IQ</div>
+    </div>
+    <div class="istat-card reveal delay-2">
+      <div class="istat-label">Uplink Stability</div>
+      <div class="istat-bar-wrap"><div class="istat-bar cyan" style="width:99.9%;"></div></div>
+      <div class="istat-val"><span class="counter" data-target="99" data-suffix=".9%">0</span></div>
+      <div class="istat-sub">Zero downtime in 847 days</div>
+    </div>
+    <div class="istat-card reveal delay-3">
+      <div class="istat-label">Nanite Deployment Rate</div>
+      <div class="istat-bar-wrap"><div class="istat-bar violet" style="width:76%;"></div></div>
+      <div class="istat-val"><span class="counter" data-target="312" data-suffix="K">0</span></div>
+      <div class="istat-sub">New enhancements this month</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== TECH SHOWCASE ========== -->
+<section id="tech">
+  <div class="tech-inner">
+    <div class="tech-header reveal">
+      <div class="section-eyebrow">Proprietary Technology</div>
+      <h2 class="section-title">The <em>Architecture</em></h2>
+      <p class="section-desc">Six core technologies that make Humanity 2.0 not just possible — but inevitable.</p>
+    </div>
+    <div class="tech-scroll-row reveal">
+      <div class="tech-card">
+        <div class="tech-card-num">01</div>
+        <div class="tech-card-title">NeuroSync™ Protocol</div>
+        <p class="tech-card-desc">Sub-8ms latency bidirectional link between biological neurons and silicon cores. Patent-pending myelin-mimetic signal encoding.</p>
+        <span class="tech-card-tag">ACTIVE RESEARCH</span>
+      </div>
+      <div class="tech-card">
+        <div class="tech-card-num">02</div>
+        <div class="tech-card-title">BioFusion Chassis</div>
+        <p class="tech-card-desc">Self-healing polymer composites that bond with bone at the molecular level. 90-day full osseointegration with zero rejection rate.</p>
+        <span class="tech-card-tag">DEPLOYED</span>
+      </div>
+      <div class="tech-card">
+        <div class="tech-card-num">03</div>
+        <div class="tech-card-title">Cortex AI Engine</div>
+        <p class="tech-card-desc">3nm neuromorphic processor array. 47 trillion synaptic operations per second, consuming less power than a human heartbeat.</p>
+        <span class="tech-card-tag">DEPLOYED</span>
+      </div>
+      <div class="tech-card">
+        <div class="tech-card-num">04</div>
+        <div class="tech-card-title">Temporal Memory Grid</div>
+        <p class="tech-card-desc">Holographic memory lattice capable of storing 40 years of complete sensory experience in a space the size of a grain of rice.</p>
+        <span class="tech-card-tag">BETA</span>
+      </div>
+      <div class="tech-card">
+        <div class="tech-card-num">05</div>
+        <div class="tech-card-title">Quantum Uplink</div>
+        <p class="tech-card-desc">Entanglement-based mesh communication. Location-independent, unjammable, unhackable thought-transmission infrastructure.</p>
+        <span class="tech-card-tag">2027 LAUNCH</span>
+      </div>
+      <div class="tech-card">
+        <div class="tech-card-num">06</div>
+        <div class="tech-card-title">Bioenergy Harvesting</div>
+        <p class="tech-card-desc">All enhancement systems powered entirely by metabolic heat and motion. No batteries. No charging. You are your own power grid.</p>
+        <span class="tech-card-tag">DEPLOYED</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== TESTIMONIALS ========== -->
+<section id="testimonials">
+  <div class="testi-header reveal">
+    <div class="section-eyebrow">Future Citizens</div>
+    <h2 class="section-title">Voices From <em>2.0</em></h2>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card reveal">
+      <p class="testi-text">The first morning after the cortex upgrade, I woke up and I knew the names of every person I had ever met, in the order I had met them, with perfect detail. I had been carrying so much loss without knowing it.</p>
+      <div class="testi-author">
+        <div class="testi-avatar">AK</div>
+        <div>
+          <div class="testi-name">Ava Kessler</div>
+          <div class="testi-role">Neurosurgeon — Enhanced 2031</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal delay-2">
+      <p class="testi-text">I haven't slept more than 90 minutes in three years. Not because I can't — because the Mesh gives me something better. Shared dreaming with eleven million people, simultaneously, in real time.</p>
+      <div class="testi-author">
+        <div class="testi-avatar">RM</div>
+        <div>
+          <div class="testi-name">Rafael Mendes</div>
+          <div class="testi-role">Architect — Enhanced 2033</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal delay-3">
+      <p class="testi-text">My daughter was born into a world that terrified me. Enhanced at age 7, she now teaches me things I would have taken three doctorates to understand. I no longer fear the future. I am jealous of it.</p>
+      <div class="testi-author">
+        <div class="testi-avatar">SL</div>
+        <div>
+          <div class="testi-name">Seo-Yeon Lim</div>
+          <div class="testi-role">Philosopher — Enhanced 2029</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FAQ ========== -->
+<section id="faq">
+  <div class="faq-inner">
+    <div class="faq-header reveal">
+      <div class="section-eyebrow">Questions</div>
+      <h2 class="section-title"><em>Answers</em></h2>
+    </div>
+    <div class="faq-item reveal">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Is the enhancement procedure reversible?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">All Tier 1 and Tier 2 enhancements are fully reversible within the first 24 months. Neural implants can be deactivated remotely and removed surgically within a 6-hour outpatient procedure. Tier 3 BioFusion skeletal modifications achieve full osseointegration after 90 days and are considered permanent at that stage.</div>
+    </div>
+    <div class="faq-item reveal delay-1">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Who has access to my neural data?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Your thoughts are sovereign. All neural data is encrypted at the dendrite level using 512-qubit lattice-based cryptography. Humanity 2.0 holds zero decryption keys. The Mesh operates on a fully distributed, trustless architecture — no central server, no single point of access, no backdoors. Your mind is legally your private property under the Neural Rights Act of 2036.</div>
+    </div>
+    <div class="faq-item reveal delay-2">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        What is the minimum age for enhancement?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Full enhancement packages are available from age 21. Tier 1 sensory and cognitive modules are approved for ages 16+ in partnered jurisdictions with parental consent. Nanite therapy programs are approved from birth in all H2.0 partner hospitals, used exclusively for immune system support and early developmental benefits.</div>
+    </div>
+    <div class="faq-item reveal delay-3">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Does enhancement affect my identity or sense of self?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">This is the question we take most seriously. Over 847,000 enhanced humans, across 12 years of post-enhancement longitudinal studies, report a consistent finding: enhanced individuals describe feeling "more themselves, not less." The technology amplifies cognitive capacity and sensory bandwidth — it does not alter personality, emotional baseline, or core values. Your identity is biological and experiential, not computational.</div>
+    </div>
+    <div class="faq-item reveal delay-4">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        What happens if I die while enhanced?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Upon biological death, all implants are remotely deactivated within 60 seconds. Memory grid contents are handled per your pre-registered Neural Estate directives — they can be donated to a loved one's archive, submitted to the Collective Memory, or permanently encrypted. No data survives in a readable state without your explicit pre-death instructions. Consciousness continuation protocols remain in research phase — ETA 2051.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CONTACT ========== -->
+<section id="contact">
+  <div class="contact-glow"></div>
+  <div class="contact-inner">
+    <div class="reveal">
+      <div class="section-eyebrow">Initialization</div>
+      <h2 class="section-title">Join The <em>Future</em></h2>
+      <p class="section-desc" style="margin:0 auto;">You are standing at the threshold. One step separates you from the last version of yourself you will ever be. The upgrade is waiting.</p>
+    </div>
+    <form class="contact-form reveal delay-2" onsubmit="handleSubmit(event)">
+      <div class="form-row">
+        <input class="form-input" type="text" placeholder="First Name" required aria-label="First Name">
+        <input class="form-input" type="text" placeholder="Last Name" required aria-label="Last Name">
+      </div>
+      <input class="form-input" type="email" placeholder="Neural Address (Email)" required aria-label="Email">
+      <input class="form-input" type="text" placeholder="Desired Enhancement Tier (1, 2, or 3)" aria-label="Enhancement Tier">
+      <textarea class="form-input" placeholder="Tell us what you want to become..." rows="4" aria-label="Message"></textarea>
+      <a href="#" class="btn-primary form-submit" onclick="handleSubmit(event)">Initialize My Upgrade</a>
+    </form>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <a href="#hero" class="footer-logo">Humanity 2.0</a>
+  <ul class="footer-links">
+    <li><a href="#timeline">Evolution</a></li>
+    <li><a href="#enhancements">Enhancements</a></li>
+    <li><a href="#neural">Neural</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <span class="footer-copy">© 2047 HUMANITY 2.0 CORP. ALL BEINGS RESERVED.</span>
+</footer>
+
+<script>
+/* ============================================================
+   LOADER
+============================================================ */
+(function() {
+  const bar = document.getElementById('loader-bar');
+  const pct = document.getElementById('loader-pct');
+  const loader = document.getElementById('loader');
+  let progress = 0;
+  const messages = ['INITIALIZING', 'SCANNING NEURAL NET', 'LOADING CONSCIOUSNESS', 'SYNCING CORTEX', 'ONLINE'];
+  const msgInterval = [0, 20, 50, 80, 95];
+
+  const tick = setInterval(() => {
+    progress += Math.random() * 4 + 1;
+    if (progress >= 100) progress = 100;
+    bar.style.width = progress + '%';
+
+    let msg = messages[0];
+    for (let i = 0; i < msgInterval.length; i++) {
+      if (progress >= msgInterval[i]) msg = messages[i];
+    }
+    pct.textContent = msg + '... ' + Math.floor(progress) + '%';
+
+    if (progress >= 100) {
+      clearInterval(tick);
+      setTimeout(() => {
+        loader.classList.add('done');
+        document.body.style.overflow = '';
+        initAnimations();
+      }, 300);
+    }
+  }, 40);
+
+  document.body.style.overflow = 'hidden';
+})();
+
+/* ============================================================
+   CURSOR
+============================================================ */
+const cursorOuter = document.getElementById('cursor-outer');
+const cursorDot   = document.getElementById('cursor-dot');
+const mouseLight  = document.getElementById('mouse-light');
+
+let mx = 0, my = 0, ox = 0, oy = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursorDot.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
+  mouseLight.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
+});
+
+function animateCursor() {
+  ox += (mx - ox) * 0.12;
+  oy += (my - oy) * 0.12;
+  cursorOuter.style.transform = `translate(${ox}px, ${oy}px) translate(-50%,-50%)`;
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+document.querySelectorAll('a,button,.enhance-card,.tech-card,.testi-card,.istat-card').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+});
+
+/* ============================================================
+   NAV SCROLL
+============================================================ */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+}, { passive: true });
+
+/* ============================================================
+   MOBILE MENU
+============================================================ */
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('mobile-menu').classList.add('open');
+});
+document.getElementById('menu-close').addEventListener('click', () => {
+  document.getElementById('mobile-menu').classList.remove('open');
+});
+function closeMobileMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+}
+
+/* ============================================================
+   NEURAL NETWORK BACKGROUND CANVAS
+============================================================ */
+function initNeuralBg() {
+  const canvas = document.getElementById('neural-canvas');
+  const ctx = canvas.getContext('2d');
+  let w, h, nodes = [];
+
+  function resize() {
+    w = canvas.width  = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+
+  const NODE_COUNT = Math.min(80, Math.floor(window.innerWidth / 16));
+  for (let i = 0; i < NODE_COUNT; i++) {
+    nodes.push({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      r: Math.random() * 1.5 + 0.5,
+    });
+  }
+
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    frame++;
+
+    nodes.forEach(n => {
+      n.x += n.vx;
+      n.y += n.vy;
+      if (n.x < 0 || n.x > w) n.vx *= -1;
+      if (n.y < 0 || n.y > h) n.vy *= -1;
+    });
+
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const dx = nodes[i].x - nodes[j].x;
+        const dy = nodes[i].y - nodes[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 150) {
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x, nodes[i].y);
+          ctx.lineTo(nodes[j].x, nodes[j].y);
+          const alpha = (1 - dist / 150) * 0.25;
+          ctx.strokeStyle = `rgba(0,245,255,${alpha})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+
+    nodes.forEach(n => {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0,245,255,0.7)';
+      ctx.shadowColor = '#00f5ff';
+      ctx.shadowBlur = 4;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+/* ============================================================
+   PARTICLE SYSTEM
+============================================================ */
+function initParticles() {
+  const canvas = document.getElementById('particle-canvas');
+  const ctx = canvas.getContext('2d');
+  let w, h;
+
+  function resize() {
+    w = canvas.width  = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+
+  const particles = [];
+  const COUNT = Math.min(60, Math.floor(window.innerWidth / 20));
+
+  for (let i = 0; i < COUNT; i++) {
+    particles.push({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      size: Math.random() * 1.5 + 0.3,
+      speed: Math.random() * 0.6 + 0.1,
+      opacity: Math.random() * 0.5 + 0.1,
+      hue: Math.random() > 0.5 ? '0,245,255' : '139,0,255',
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach(p => {
+      p.y -= p.speed;
+      if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${p.hue},${p.opacity})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+/* ============================================================
+   NEURAL DIAGRAM (small canvas in section)
+============================================================ */
+function initNeuralDiagram() {
+  const canvas = document.getElementById('neural-diagram-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width  = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', () => { resize(); }, { passive: true });
+
+  const nodes = [];
+  const W = () => canvas.width;
+  const H = () => canvas.height;
+
+  function buildNodes() {
+    nodes.length = 0;
+    const count = 40;
+    for (let i = 0; i < count; i++) {
+      nodes.push({
+        x: Math.random() * W(),
+        y: Math.random() * H(),
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        pulse: Math.random() * Math.PI * 2,
+      });
+    }
+  }
+  buildNodes();
+  window.addEventListener('resize', buildNodes, { passive: true });
+
+  function draw() {
+    const w = W(), h = H();
+    ctx.clearRect(0, 0, w, h);
+
+    nodes.forEach(n => {
+      n.x += n.vx; n.y += n.vy; n.pulse += 0.02;
+      if (n.x < 0 || n.x > w) n.vx *= -1;
+      if (n.y < 0 || n.y > h) n.vy *= -1;
+    });
+
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const dx = nodes[i].x - nodes[j].x;
+        const dy = nodes[i].y - nodes[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x, nodes[i].y);
+          ctx.lineTo(nodes[j].x, nodes[j].y);
+          const a = (1 - dist/120) * 0.4;
+          ctx.strokeStyle = `rgba(0,245,255,${a})`;
+          ctx.lineWidth = 0.6;
+          ctx.stroke();
+        }
+      }
+    }
+
+    nodes.forEach(n => {
+      const r = 1.5 + Math.sin(n.pulse) * 0.8;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+      ctx.fillStyle = Math.sin(n.pulse) > 0.5 ? 'rgba(139,0,255,0.9)' : 'rgba(0,245,255,0.9)';
+      ctx.shadowColor = '#00f5ff';
+      ctx.shadowBlur = 4;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+/* ============================================================
+   SCROLL ANIMATIONS
+============================================================ */
+function initScrollAnimations() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+
+        // Animate enhance bars
+        if (entry.target.classList.contains('enhance-card')) {
+          const fill = entry.target.querySelector('.enhance-fill');
+          if (fill) setTimeout(() => fill.classList.add('animated'), 200);
+        }
+
+        // Animate istat bars
+        if (entry.target.classList.contains('istat-card')) {
+          const bar = entry.target.querySelector('.istat-bar');
+          if (bar) setTimeout(() => bar.classList.add('animated'), 200);
+        }
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+/* ============================================================
+   COUNTER ANIMATIONS
+============================================================ */
+function initCounters() {
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseFloat(el.dataset.target);
+        const suffix = el.dataset.suffix || '';
+        let start = 0;
+        const duration = 1800;
+        const startTime = performance.now();
+
+        function update(now) {
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = Math.floor(start + (target - start) * eased);
+          el.textContent = current.toLocaleString() + suffix;
+          if (progress < 1) requestAnimationFrame(update);
+          else el.textContent = target.toLocaleString() + suffix;
+        }
+        requestAnimationFrame(update);
+        counterObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
+}
+
+/* ============================================================
+   FAQ
+============================================================ */
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+/* ============================================================
+   ENHANCE CARD MOUSE TRACKING
+============================================================ */
+function trackMouse(el, e) {
+  const rect = el.getBoundingClientRect();
+  const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+  const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+  el.style.setProperty('--mx', x + '%');
+  el.style.setProperty('--my', y + '%');
+}
+
+/* ============================================================
+   CONTACT SUBMIT
+============================================================ */
+function handleSubmit(e) {
+  e.preventDefault();
+  const btn = document.querySelector('.form-submit');
+  if (btn) {
+    btn.textContent = 'UPLINK ESTABLISHED ✓';
+    btn.style.background = 'linear-gradient(135deg, var(--cyan), var(--violet))';
+    btn.style.boxShadow = '0 0 40px rgba(0,245,255,0.6)';
+  }
+}
+
+/* ============================================================
+   HERO CYBORG EYES TRACK CURSOR
+============================================================ */
+function initEyeTracking() {
+  const eyeL = document.getElementById('eyeL');
+  const eyeR = document.getElementById('eyeR');
+  const svgWrap = document.querySelector('.cyborg-svg-wrap');
+  if (!eyeL || !eyeR || !svgWrap) return;
+
+  document.addEventListener('mousemove', e => {
+    const rect = svgWrap.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height * 0.44;
+    const dx = e.clientX - cx;
+    const dy = e.clientY - cy;
+    const angle = Math.atan2(dy, dx);
+    const dist = Math.min(3, Math.sqrt(dx*dx + dy*dy) / 80);
+    const offsetX = Math.cos(angle) * dist;
+    const offsetY = Math.sin(angle) * dist;
+
+    // Scale offsets to SVG coordinate space
+    const scaleX = 400 / rect.width;
+    const scaleY = 420 / rect.height;
+    const svgOffX = offsetX * scaleX * 2;
+    const svgOffY = offsetY * scaleY * 2;
+
+    eyeL.setAttribute('cx', 155 + svgOffX);
+    eyeL.setAttribute('cy', 175 + svgOffY);
+    eyeR.setAttribute('cx', 245 + svgOffX);
+    eyeR.setAttribute('cy', 175 + svgOffY);
+  });
+}
+
+/* ============================================================
+   LIVE PANEL DATA FLICKER
+============================================================ */
+function initPanelFlicker() {
+  const panels = [
+    { id: 'panel-neural', base: 98.7, suffix: '%', unit: '' },
+    { id: 'panel-online', base: 2400, suffix: 'K', unit: '' },
+  ];
+  setInterval(() => {
+    panels.forEach(p => {
+      const el = document.getElementById(p.id);
+      if (!el) return;
+      if (p.id === 'panel-neural') {
+        el.textContent = (p.base + (Math.random() - 0.5) * 0.4).toFixed(1) + p.suffix;
+      } else {
+        el.textContent = (p.base + Math.floor((Math.random() - 0.5) * 10)) + 'K';
+      }
+    });
+  }, 1500);
+}
+
+/* ============================================================
+   MAGNETIC BUTTONS
+============================================================ */
+function initMagnetic() {
+  document.querySelectorAll('.btn-primary, .btn-secondary').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const rect = btn.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = (e.clientX - cx) * 0.25;
+      const dy = (e.clientY - cy) * 0.25;
+      btn.style.transform = `translate(${dx}px, ${dy}px) translateY(-3px)`;
+    });
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transform = '';
+    });
+  });
+}
+
+/* ============================================================
+   PARALLAX
+============================================================ */
+function initParallax() {
+  const face = document.getElementById('hero-face');
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (face) face.style.transform = `translateY(${y * 0.3}px)`;
+  }, { passive: true });
+}
+
+/* ============================================================
+   INIT ALL
+============================================================ */
+function initAnimations() {
+  initNeuralBg();
+  initParticles();
+  initNeuralDiagram();
+  initScrollAnimations();
+  initCounters();
+  initEyeTracking();
+  initPanelFlicker();
+  initMagnetic();
+  initParallax();
+}
+</script>
+</body>
+</html>
