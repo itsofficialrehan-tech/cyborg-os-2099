@@ -87,15 +87,12 @@ Open with Live Server
 
 ---
 
-## Live Demo
-
-Add your deployed link here
 
 ---
 
 ## Author
 
-Zahir Khan
+Rehan khan
 
 Folder Structure
 
